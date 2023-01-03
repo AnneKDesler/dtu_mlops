@@ -37,9 +37,6 @@ def train(lr):
         for images, labels in train_set:
             steps += 1
             
-            # Flatten images into a 784 long vector
-            images.resize_(images.size()[0], 784)
-            
             optimizer.zero_grad()
             
             output = model.forward(images)
@@ -66,9 +63,6 @@ def evaluate(model_checkpoint):
     _, test_set = mnist()
     accuracy = 0
     for images, labels in test_set:
-
-        images = images.resize_(images.size()[0], 784)
-
         output = model(images)
 
         ## Calculating the accuracy 

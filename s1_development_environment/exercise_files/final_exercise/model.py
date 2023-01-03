@@ -5,24 +5,23 @@ import torch.nn.functional as F
 class MyAwesomeModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(784, 256)
-        self.fc2 = nn.Linear(256, 128)
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, 10)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=3,
+			kernel_size=(5, 5))
+        self.conv2 = nn.Conv2d(in_channels=3, out_channels=5,
+			kernel_size=(5, 5))
+        self.fc1 = nn.Linear(in_features=2000, out_features=100)
+        self.fc2 = nn.Linear(in_features=100, out_features=10)
 
         # Dropout module with 0.2 drop probability
         self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
-        # make sure input tensor is flattened
+        x = x.view(x.shape[0], 1,x.shape[1],x.shape[2])
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
         x = x.view(x.shape[0], -1)
+        x = F.relu(self.fc1(x))
 
-        # Now with dropout
-        x = self.dropout(F.relu(self.fc1(x)))
-        x = self.dropout(F.relu(self.fc2(x)))
-        x = self.dropout(F.relu(self.fc3(x)))
-
-        # output so no dropout here
-        x = F.log_softmax(self.fc4(x), dim=1)
+        x = F.log_softmax(self.fc2(x), dim=1)
 
         return x
