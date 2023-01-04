@@ -36,7 +36,6 @@ def train(lr):
         print("Epoch: {}/{}.. ".format(e+1, epochs))
         for images, labels in train_set:
             steps += 1
-            
             optimizer.zero_grad()
             
             output = model.forward(images)

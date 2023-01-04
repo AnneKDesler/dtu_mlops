@@ -16,7 +16,7 @@ class MyAwesomeModel(nn.Module):
         self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
-        x = x.view(x.shape[0], 1,x.shape[1],x.shape[2])
+
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         x = x.view(x.shape[0], -1)

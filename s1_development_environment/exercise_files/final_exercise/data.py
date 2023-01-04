@@ -1,23 +1,31 @@
 import torch
 import numpy as np
-
+from torchvision import transforms
 
 def mnist():
     # exchange with the corrupted mnist dataset
-    path = "C:/Users/anned/OneDrive - Danmarks Tekniske Universitet/Uni/MLOps/dtu_mlops/data/corruptmnist"
+    path = "C:/Users/anned/OneDrive - Danmarks Tekniske Universitet/Uni/MLOps/dtu_mlops/data"
 
-    data_train = np.load(path + "/train_0.npz")
-    train = [[torch.from_numpy(data_train["images"]).float(),torch.from_numpy(data_train["labels"])]]
-    data_train = np.load(path + "/train_1.npz")
-    train.append([torch.from_numpy(data_train["images"]).float(),torch.from_numpy(data_train["labels"])])
-    data_train = np.load(path + "/train_2.npz")
-    train.append([torch.from_numpy(data_train["images"]).float(),torch.from_numpy(data_train["labels"])])
-    data_train = np.load(path + "/train_3.npz")
-    train.append([torch.from_numpy(data_train["images"]).float(),torch.from_numpy(data_train["labels"])])
-    data_train = np.load(path + "/train_4.npz")
-    train.append([torch.from_numpy(data_train["images"]).float(),torch.from_numpy(data_train["labels"])])
-    data_test = np.load(path + "/test.npz")
-    test = [[torch.from_numpy(data_test["images"]).float(),torch.from_numpy(data_test["labels"])]]
+    train = []
+    for i in range(5):
+        data_train = np.load(path + "/corruptmnist/train_{}.npz".format(i))
+        images = data_train["images"]
+        mean = images.mean((1,2))[:, np.newaxis,np.newaxis]
+        std = images.std((1,2))[:, np.newaxis,np.newaxis]
+        images = (images - mean)/std
+        images = images[:, np.newaxis,:,:]
+        images = torch.from_numpy(images).float()
+        labels = torch.from_numpy(data_train["labels"])
+        train.append([images,labels])
+    data_test = np.load(path + "/corruptmnist/test.npz")
+    images = data_test["images"]
+    mean = images.mean((1,2))[:, np.newaxis,np.newaxis]
+    std = images.std((1,2))[:, np.newaxis,np.newaxis]
+    images = (images - mean)/std
+    images = images[:, np.newaxis,:,:]
+    images = torch.from_numpy(images).float()
+    labels = torch.from_numpy(data_test["labels"])
+    test = [[images,labels]]
     return train, test
 
 train, test = mnist()
