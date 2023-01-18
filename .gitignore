@@ -141,3 +141,9 @@ FashionMNIST/
 #logs 
 log/
 datasets/
+
+data/
+
+lfw_funneled/
+
+lfw/
